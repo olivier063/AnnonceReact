@@ -5,6 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/login';
 import Register from './screens/register';
 import Accueil from './screens/accueil';
+import PrintAnnonce from './screens/printAnnonce';
+import Comments from './components/comments';
+import UniqComment from './components/uniqComment';
+import AddAnnonce from './components/addAnnonce';
+import MyAnnonce from './screens/myAnnonce';
 
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +31,11 @@ export default function App() {
         />
         <Stack.Screen name="LOGIN" component={Login} />
         <Stack.Screen name="REGISTER" component={Register} />
+        <Stack.Screen name="PRINT ANNONCE" component={PrintAnnonce} />
+        <Stack.Screen name="COMMENTS" component={Comments} />
+        <Stack.Screen name="UNIQUE COMMENT" component={UniqComment} />
+        <Stack.Screen name="ADD ANNONCE" component={AddAnnonce} />
+        <Stack.Screen name="MY ANNONCE" component={MyAnnonce} />
 
       </Stack.Navigator>
     </NavigationContainer>
