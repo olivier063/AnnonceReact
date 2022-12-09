@@ -4,47 +4,79 @@ import URI from "./uriService";
 
 
 class UserService {
-     token = null;
+    token = null;
     user = null;
 
-  async login(token){
-      
+    async login(email, password) {
+
         let customConfig = {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ token.token
+                'Content-Type': 'application/json'
             }
         };
-        console.log(customConfig)
         let response = null;
         try {
-            response = await axios.get(`${URI}/api/me`, customConfig);
-        } catch(e) {
+            response = await axios.post(`${URI}/api/Login`, JSON.stringify({ email: email, password: password }), customConfig);
+        } catch (e) {
             console.log(e)
         }
-        response.data.token = token.token
-        this.user = response.data
-         return StorageService.save({
-            key: 'loginState', // Note: Do not use underscore("_") in key!
-            data: this.user,
-        })
-     }
+        if (response === null) {
+            return null;
+        }
+        return this.setUser(response.data)
+    }
 
-     logout(){
-
-     }
-
-    async isConnected(){
+    async logout() {
         try {
-            this.user =  await StorageService.load({
+            await StorageService.remove({
                 key: 'loginState'
             })
-        } catch(e){
-            this.logout();
+            console.log('logout')
+        } catch (e) {
+            console.log(e);
+            return
+        }
+        this.user = null
+    }
+
+    async isConnected() {
+        try {
+            this.user = await StorageService.load({
+                key: 'loginState'
+            })
+
+            console.log("IS CONNECTED", this.user)
+        } catch (e) {
+            // this.logout();
             return
         }
         return this.user
-     }
+    }
+
+    async setUser(token) {
+
+        customConfig = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token.token
+            }
+        };
+        console.log(customConfig)
+        response = null;
+        try {
+            response = await axios.get(`${URI}/api/me`, customConfig);
+        } catch (e) {
+            console.log(e)
+        } if (response === null) {
+            return null;
+        }
+        response.data.token = token.token
+        this.user = response.data
+        return StorageService.save({
+            key: 'loginState', // Note: Do not use underscore("_") in key!
+            data: this.user,
+        })
+    }
 }
 
 const userService = new UserService()

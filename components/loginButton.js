@@ -13,6 +13,8 @@ import axios from 'axios';
 import URI from '../services/uriService';
 import StorageService from '../services/storageService';
 import userService from '../services/userService';
+import LogoutButton from './logoutButton';
+import MyAnnonceButton from './myAnnonceButton';
 
 export default function LoginButton() {
 
@@ -35,23 +37,10 @@ export default function LoginButton() {
             alert("Entrez un MDP de 6 caracteres")
         }
         else {
-            let customConfig = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            let response = null;
-            try {
-                response = await axios.post(`${URI}/api/Login`, JSON.stringify({ email: email, password: password }), customConfig);
-            } catch (e) {
-                console.log(e)
-            }
-
-            if (response !== null) {
-             await userService.login(response.data)
-            } else {
+            const user = await userService.login(email, password)
+            if (user === null) {
                 // on affiche le message d'erreur
+                alert("email ou password incorrect")
             }
             console.log(await userService.isConnected())
         }
@@ -122,7 +111,8 @@ export default function LoginButton() {
                     <Text style={{ color: "white", fontWeight: "bold", fontSize: 17 }}>CONNECTION</Text>
                 </TouchableOpacity>
             </View>
-
+            {/* <LogoutButton navigation={useNavigation()}/>
+            <MyAnnonceButton/> */}
         </View>
     );
 
@@ -157,6 +147,9 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 7,
+        borderWidth: 1,
     },
 
     connectionButton: {

@@ -3,13 +3,22 @@ import React, { Component } from 'react'
 
 
 export default class MyAnnonceButton extends Component {
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+        
+        };
+       
+      }
     
     render() {
-        // const { navigate } = this.props.navigation;
+        const { navigate } = this.props.navigation;
         return (
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity
-                    onPress={() => navigate('MY ANNONCE')}
+                // onPress={ () => this.props.navigation.navigate('MY ANNONCE')}
+                    // onPress={() => navigate('MY ANNONCE')}
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
@@ -18,8 +27,10 @@ export default class MyAnnonceButton extends Component {
                         width: 200,
                         borderRadius: 7,
                         borderColor: 'black',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        marginTop: 20
                     }}
+                    onPress={() => navigate("MY ANNONCE")}
                 >
                     <Text>
                         GERER MES ANNONCES

@@ -4,47 +4,57 @@ import ajax from '../services/fetchAnnonces'
 import fetchAnnonces from '../services/fetchAnnonces';
 import StorageService from '../services/storageService';
 import userService from '../services/userService';
+import LogoutButton from '../components/logoutButton';
+
 
 
 export default class Accueil extends Component {
 
     constructor(props) {
         super(props);
-// console.log(this.props)
+        // console.log(this.props)
         this.state = {
             data: [],
             name: '',
+
         };
         this.props.navigation.addListener('focus', () => {
             this.getStorage();
-          });    
+        });
     }
 
-
+    // On recupère les annonces à la montée du component
     async componentDidMount() {
         const json = await ajax.fetchAnnonces();
         this.setState({ data: json })
-        console.log("COMPONENT DID MOUNT",this.state);
+        // console.log("COMPONENT DID MOUNT",this.state);
         this.getStorage();
+      
     }
 
-
-    //......................................DEBUT
-
+    // On verifie dans le localStorage que l'utilisateur soit bien connecté pour Set le state: name, afin de l'afficher dans l'accueil si il est connecté
     async getStorage() {
         const user = await userService.isConnected()
         console.log('GET STORAGE',user)
-        if (user){
+        if (user) {
             this.setState({
                 name: user["name"]
             });
+        } else {
+            this.setState({
+                name: ""
+            });
         }
     }
-    //......................................FIN
+
+  
+
+
 
     render() {
         const { data } = this.state;
         const { navigate } = this.props.navigation;
+    
 
         return (
             <View >
@@ -62,7 +72,7 @@ export default class Accueil extends Component {
                     ListFooterComponent={<View style={{ width: 20 }} />} // ce style permet de scroller horizontalement jusqu'au dernier item
                     horizontal
                     pagingEnabled={true}
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={true}
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
@@ -99,6 +109,7 @@ export default class Accueil extends Component {
                     >
                         <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>CATEGORIES</Text>
                     </TouchableOpacity>
+                   
                     <TouchableOpacity style={{ borderwidth: 1, width: 150, height: 30, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>MES LIKES</Text>
                     </TouchableOpacity>
@@ -127,17 +138,17 @@ export default class Accueil extends Component {
                                             {item.titre}
                                         </Text>
                                     </View>
-                                    <View style={{ alignItems: 'center', flex: 0.5, justifyContent: 'center'}}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold', width: 50  }}>
+                                    <View style={{ alignItems: 'center', flex: 0.5, justifyContent: 'center' }}>
+                                        <Text style={{ fontSize: 18, fontWeight: 'bold', width: 50 }}>
                                             {item.prix}€
                                         </Text>
                                     </View>
 
                                 </View>
-                                <View style={{alignItems: 'flex-end', marginRight: 10}}>
+                                <View style={{ alignItems: 'flex-end', marginRight: 10 }}>
 
                                     {/* le item.nombre de like, s'ecrit entre crochets car dans le json il n'y a pas d'underscore */}
-                                    <Text style={{fontSize: 16, marginVertical: -15}}>{item['nombre de like']} likes</Text> 
+                                    <Text style={{ fontSize: 16, marginVertical: -15 }}>{item['nombre de like']} likes</Text>
                                 </View>
 
                                 {/* <ScrollView>
@@ -159,19 +170,10 @@ export default class Accueil extends Component {
                                         </View>
                                     </TouchableOpacity>
                                 </View> */}
-                                
+
                             </TouchableOpacity>
                         </View>
                     )} />
-
-                <View style={styles.createButton}>
-                    <TouchableOpacity
-                        onPress={() => navigate('ADD ANNONCE')}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 40, fontWeight: 'bold' }}>+</Text>
-                    </TouchableOpacity>
-                </View>
-
             </View>
         )
     }
@@ -195,13 +197,5 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         marginTop: 15
     },
-    createButton: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#92AFD7',
-        position: 'absolute',
-        top: 610,
-        marginLeft: 165
-    }
+
 })

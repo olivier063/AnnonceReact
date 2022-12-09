@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
+    Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react'
@@ -13,6 +14,7 @@ import axios from 'axios';
 import URI from '../services/uriService';
 import { registerRootComponent } from 'expo';
 import StorageService from '../services/storageService';
+import userService from '../services/userService';
 
 export default function RegisterButton() {
 
@@ -30,36 +32,36 @@ export default function RegisterButton() {
             alert('Email non valide')
             return;
         }
-        else if (!password) {
+        else if (!password || password.length < 6) {
             alert("Entrez un MDP de 6 caracteres minimum")
         }
         else if (!name) {
             alert("Entrez votre Pseudo")
         }
-        // if(!email && !password && !name){
-        //     console.log('2')
-        //     alert("Entrez tous les champs requis")
-        // } 
         else {
-            // j'ai ajouté cette variable car axios me renvoyait une erreur sans elle. 
+            // j'ai ajouté cette variable (customConfig) car axios me renvoyait une erreur sans elle. 
             let customConfig = {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             };
-            axios.post(`${URI}/api/create-account`, JSON.stringify({ email: email, password: password, name: name }), customConfig).then(response => {
-                console.log(response.data)
-            }).catch(e => console.log(e))
+            let response = null
+            try {
+                response = await axios.post(`${URI}/api/create-account`,
+                JSON.stringify({ email: email, password: password, name: name }), customConfig)
+
+            } catch (e) {
+                console.log(e)
+            }
+            if (response === null) {
+                alert("Une erreur est survenue");
+                return
+            }
+            await userService.setUser(response.data)
+            navigation.navigate('ACCUEIL')     
+            console.log(StorageService)
         }
 
-
-
-        const json = await StorageService.save({
-            key: 'loginState', // Note: Do not use underscore("_") in key!
-            data: json,
-        })
-        // json.name = name
-        console.log(StorageService)
     }
 
     return (
@@ -168,6 +170,9 @@ const styles = StyleSheet.create({
         margin: 12,
         borderWidth: 1,
         padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 7,
+        borderColor: 'black'
     },
 
     connectionButton: {
