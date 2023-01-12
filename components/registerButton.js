@@ -39,7 +39,7 @@ export default function RegisterButton() {
             alert("Entrez votre Pseudo")
         }
         else {
-            // j'ai ajouté cette variable (customConfig) car axios me renvoyait une erreur sans elle. 
+            // j'ai ajouté cette variable (customConfig vu dans Stackoverflow) car axios me renvoyait une erreur sans elle. 
             let customConfig = {
                 headers: {
                     'Content-Type': 'application/json'

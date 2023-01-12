@@ -45,7 +45,7 @@ class UserService {
                 key: 'loginState'
             })
 
-            console.log("IS CONNECTED", this.user)
+            // console.log("IS CONNECTED", this.user)
         } catch (e) {
             // this.logout();
             return
@@ -55,7 +55,7 @@ class UserService {
 
     async setUser(token) {
 
-        customConfig = {
+        const customConfig = {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token.token
@@ -80,6 +80,4 @@ class UserService {
 }
 
 const userService = new UserService()
-
-
 export default userService;

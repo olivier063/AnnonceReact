@@ -1,6 +1,6 @@
 import { Text, View, Image, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import React, { Component } from 'react'
-import ajax from '../services/fetchAnnonces'
+import AnnonceService from '../services/fetchAnnonces';
 
 export default class Comments extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ export default class Comments extends Component {
     }
 
     async componentDidMount() {
-        const json = await ajax.fetchAnnonces();
+        const json = await AnnonceService.fetchAnnonces();
         this.setState({ data: json })
     }
 

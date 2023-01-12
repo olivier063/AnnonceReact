@@ -1,9 +1,10 @@
 
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import URI from '../services/uriService';
+import userService from '../services/userService';
 
 export default function AddAnnonce() {
     const navigation = useNavigation();
@@ -13,72 +14,75 @@ export default function AddAnnonce() {
     const [image, setImage] = useState('');
 
 
-    // const postAnnonce = async () => {
 
-    //     if (!titre || !description || !prix) {
-    //         alert('Veuillez entrez tous les champs svp !')
-    //         return;
-    //     } else {
-    //         try {
-    //             await axios.post(`${URI}/api/annonces`,
-    //                 JSON.stringify({ titre: titre, description: description, prix: prix }))
-    //         } catch (e) {
-    //             console.log(e)
-    //         }
-    // navigation.navigate('MY ANNONCE')
-    //     }
-    // }
-
+    //POST ANNONCE..............................................
 
     const postAnnonce = async () => {
-        let response = null
-        if (!titre, !description, !prix) {
-            alert('Veuillez entrez tous les champs svp !')
-        } else {
-            try {
-                response = await fetch(`${URI}/api/annonces`, {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        titre: titre,
-                        description: description,
-                        prix: prix
-                    })
-                });
-                console.log("RESPONSE", JSON.stringify(response))
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    }
-
-
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titre: titre, description: description, prix: prix })
-    };
-
-    const handleChange = async () => {
         try {
+            // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
+            const user = await userService.isConnected()
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ titre: titre, description: description, prix: prix })
+            };
             const response = await fetch(
                 `${URI}/api/annonces`, requestOptions)
-                .then(response => {
-                    response.json()
-                        .then(data => {
-                            Alert.alert("Post created at : ",
-                                data.createdAt);
-                        });
-                })
-            console.log("RESPONSE", JSON.stringify(response))
+            console.log(response)
+            if (response.ok) {
+                navigation.navigate('MY ANNONCE')
+            } else {
+                const json = await response.json()
+                alert(json.message)
+
+            }
         }
         catch (error) {
-            console.error(error);
+            console.log(error);
         }
     }
+    //..............................................POST ANNONCE
+
+    //image-picker..............................................
+    // const launchImageLibrary = async(mediaType) =>{
+
+    //     const result = await launchImageLibrary(mediaType);
+    // }
+
+    //    const launchImageLibrary = () => {
+    //         let options = {
+    //           storageOptions: {
+    //             skipBackup: true,
+    //             path: 'images',
+    //           },
+    //         };
+    //         ImagePicker.launchImageLibrary(options, (response) => {
+    //           console.log('Response = ', response);
+
+    //           if (response.didCancel) {
+    //             console.log('User cancelled image picker');
+    //           } else if (response.error) {
+    //             console.log('ImagePicker Error: ', response.error);
+    //           } else if (response.customButton) {
+    //             console.log('User tapped custom button: ', response.customButton);
+    //             alert(response.customButton);
+    //           } else {
+    //             const source = { uri: response.uri };
+    //             console.log('response', JSON.stringify(response));
+    //             this.setState({
+    //               filePath: response,
+    //               fileData: response.data,
+    //               fileUri: response.uri
+    //             });
+    //           }
+    //         });
+    //       }
+    //..............................................image-picker
+
+
 
 
 
@@ -98,7 +102,7 @@ export default function AddAnnonce() {
                 <TextInput
                     style={styles.input}
                     placeholder="Ecrire une courte description"
-                    maxLength={200}
+                    maxLength={120}
                     value={description}
                     onChange={(e) => setDescription(e.nativeEvent.text)}
                 />
@@ -108,7 +112,7 @@ export default function AddAnnonce() {
                     style={styles.input}
                     placeholder="Ajouter un prix de vente"
                     keyboardType='numeric'
-                    maxLength={5}
+                    maxLength={6}
                     value={prix}
                     onChange={(e) => setPrix(e.nativeEvent.text)}
                 />
@@ -123,7 +127,9 @@ export default function AddAnnonce() {
                 />
             </View>
             <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                // onPress={() => ()}
+                >
                     <Text style={styles.button}>Choisir une image</Text>
                 </TouchableOpacity>
             </View>

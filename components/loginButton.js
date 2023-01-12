@@ -42,7 +42,7 @@ export default function LoginButton() {
                 // on affiche le message d'erreur
                 alert("email ou password incorrect")
             }
-            console.log(await userService.isConnected())
+            // console.log(await userService.isConnected())
         }
         // setIsLogged(!isLogged)
         navigation.navigate('ACCUEIL')

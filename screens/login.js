@@ -17,7 +17,7 @@ import MyAnnonceButton from "../components/myAnnonceButton";
 export default class Login extends Component {
     constructor(props) {
         super(props);
-    // console.log(this.props)
+    // console.log("PROPS LOGIN",this.props)
         this.state = {
          name: ""
         };
@@ -35,7 +35,7 @@ export default class Login extends Component {
       //On Set le name de l'utilisateur en le recuperant dans le localStorage
       async getStorage() {
         const user = await userService.isConnected()
-        console.log('GET STORAGE',user)
+        // console.log('GET STORAGE',user)
         if (user) {
             this.setState({
                 name: user["name"]
