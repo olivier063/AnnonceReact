@@ -10,6 +10,7 @@ import Comments from './components/comments';
 import UniqComment from './components/uniqComment';
 import AddAnnonce from './components/addAnnonce';
 import MyAnnonce from './screens/myAnnonce';
+import UpdateAnnonce from './screens/updateAnnonce';
 
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,7 @@ export default function App() {
         <Stack.Screen name="UNIQUE COMMENT" component={UniqComment} />
         <Stack.Screen name="ADD ANNONCE" component={AddAnnonce} />
         <Stack.Screen name="MY ANNONCE" component={MyAnnonce} />
+        <Stack.Screen name="UPDATE ANNONCE" component={UpdateAnnonce} />
 
       </Stack.Navigator>
     </NavigationContainer>

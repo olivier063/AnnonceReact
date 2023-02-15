@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import URI from '../services/uriService';
 import userService from '../services/userService';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function AddAnnonce() {
     const navigation = useNavigation();
@@ -18,6 +19,15 @@ export default function AddAnnonce() {
     //POST ANNONCE..............................................
 
     const postAnnonce = async () => {
+        if (!titre) {
+            alert("Entrez un titre")
+        }
+        else if (!description) {
+            alert("Entrez une desrciption")
+        }
+        else if (!prix) {
+            alert("Entrez un prix de vente")
+        }
         try {
             // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
             const user = await userService.isConnected()
@@ -32,12 +42,12 @@ export default function AddAnnonce() {
             const response = await fetch(
                 `${URI}/api/annonces`, requestOptions)
             console.log(response)
+
             if (response.ok) {
                 navigation.navigate('MY ANNONCE')
             } else {
                 const json = await response.json()
-                alert(json.message)
-
+                // alert(json.message)
             }
         }
         catch (error) {
@@ -47,39 +57,21 @@ export default function AddAnnonce() {
     //..............................................POST ANNONCE
 
     //image-picker..............................................
-    // const launchImageLibrary = async(mediaType) =>{
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
 
-    //     const result = await launchImageLibrary(mediaType);
-    // }
+        console.log(result);
 
-    //    const launchImageLibrary = () => {
-    //         let options = {
-    //           storageOptions: {
-    //             skipBackup: true,
-    //             path: 'images',
-    //           },
-    //         };
-    //         ImagePicker.launchImageLibrary(options, (response) => {
-    //           console.log('Response = ', response);
-
-    //           if (response.didCancel) {
-    //             console.log('User cancelled image picker');
-    //           } else if (response.error) {
-    //             console.log('ImagePicker Error: ', response.error);
-    //           } else if (response.customButton) {
-    //             console.log('User tapped custom button: ', response.customButton);
-    //             alert(response.customButton);
-    //           } else {
-    //             const source = { uri: response.uri };
-    //             console.log('response', JSON.stringify(response));
-    //             this.setState({
-    //               filePath: response,
-    //               fileData: response.data,
-    //               fileUri: response.uri
-    //             });
-    //           }
-    //         });
-    //       }
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
     //..............................................image-picker
 
 
@@ -100,10 +92,12 @@ export default function AddAnnonce() {
             </View>
             <View >
                 <TextInput
-                    style={styles.input}
+                    style={styles.inputDescription}
                     placeholder="Ecrire une courte description"
-                    maxLength={120}
+                    maxLength={255}
                     value={description}
+                    multiline={true}
+                    numberOfLines={3}
                     onChange={(e) => setDescription(e.nativeEvent.text)}
                 />
             </View>
@@ -128,7 +122,7 @@ export default function AddAnnonce() {
             </View>
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity
-                // onPress={() => ()}
+                    onPress={() => pickImage()}
                 >
                     <Text style={styles.button}>Choisir une image</Text>
                 </TouchableOpacity>
@@ -151,6 +145,14 @@ export default function AddAnnonce() {
 const styles = StyleSheet.create({
     input: {
         height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: 'white'
+    },
+    inputDescription: {
+        height: 80,
         margin: 12,
         borderWidth: 1,
         padding: 10,

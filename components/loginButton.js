@@ -97,6 +97,7 @@ export default function LoginButton() {
                 <TextInput
                     style={styles.input}
                     value={password}
+                    secureTextEntry={true}
                     onChange={(e) => setPassword(e.nativeEvent.text)}
                     placeholder="Entrez votre Mot de Passe"
 

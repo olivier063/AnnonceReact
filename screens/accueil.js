@@ -2,6 +2,8 @@ import { Text, View, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView }
 import React, { Component } from 'react'
 import AnnonceService from '../services/fetchAnnonces'
 import userService from '../services/userService';
+import DropDown from '../components/dropDown';
+
 
 
 
@@ -16,33 +18,40 @@ export default class Accueil extends Component {
             data: [],
             data2: [],
             name: '',
+
+
         };
-        this.props.navigation.addListener('focus', () => {
+
+
+        // le addListener de fetchMyAnnonces permet de mettre a jour la liste d'annonce dans la 2eme flatlist lors de la creation d'une annonce
+        this.props.navigation.addListener('focus', async () => {
             this.getStorage();
+            const json = await AnnonceService.fetchMyAnnonces();
+            this.setState({ data2: json })
+            // console.log(this.state.data2)
         });
-        
+
     }
 
     // On recupère les annonces à la montée du component
     async componentDidMount() {
         const json = await AnnonceService.fetchAnnonces();
-        //LE .slice(0, 10) PERMET D'AFFFICHER JUSQU ' A 10 OBJETS DANS LA FLATLIST
-        this.setState({ data: json.slice(0, 8) })
+        this.setState({ data: json })
         // console.log("COMPONENT DID MOUNT",this.state);
         this.getStorage();
 
 
 
-        // je cree un data2 pour la flatlist numero 2 afin de display les donnees a partir de l'objet 8 car ces objets sont dans la flatlist 1 et on ne veut pas les revoir
-        const json2 = await AnnonceService.fetchAnnonces();
-        this.setState({ data2: json2.slice(8, 100) })
+        // je cree un data2 pour la flatlist numero 2 afin de display les annonces par created at pour les annonces < 50 likes
+        const json2 = await AnnonceService.fetchMyAnnonces();
+        this.setState({ data2: json2 })
         // console.log(this.state.data)
     }
 
-    
 
-  
-     
+
+
+
 
     // On verifie dans le localStorage que l'utilisateur soit bien connecté pour Set le state: name, afin de l'afficher dans l'accueil si il est connecté
     async getStorage() {
@@ -59,40 +68,40 @@ export default class Accueil extends Component {
         }
     }
 
-  
+
 
 
 
     render() {
         const { data, data2 } = this.state;
         const { navigate } = this.props.navigation;
-   
-      
+
+
         return (
-            <View >
+            <View style={{ backgroundColor: 'black' }}>
 
                 <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 5, borderColor: 'black', borderWidth: 1, borderRadius: 10, width: 200, textAlign: 'center', backgroundColor: '#40BBE1' }}>Bonjour {this.state.name}</Text>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 5, borderColor: 'white', borderWidth: 1, borderRadius: 10, width: 200, textAlign: 'center', backgroundColor: '#40BBE1' }}>Bonjour {this.state.name}</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 5 }}>LES PLUS LIKÉES</Text>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 5, color: 'white' }}>LES PLUS LIKÉES</Text>
                 </View>
 
 
 
                 <FlatList
-                    ListFooterComponent={<View style={{ width: 100 }} />} // ce style permet de scroller horizontalement jusqu'au dernier item
+                    ListFooterComponent={<View style={{ width: 500 }} />} // ce style permet de scroller horizontalement jusqu'au dernier item
                     horizontal
                     pagingEnabled={true}
                     showsHorizontalScrollIndicator={true}
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        
+
                         <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 5, marginLeft: 10, marginBottom: 130 }}>
-                            <TouchableOpacity 
-                            style={{ borderWidth: 1, height: 250, width: 150, backgroundColor: "#40BBE1", borderRadius: 7 }}
-                            onPress={() => navigate('PRINT ANNONCE', {id: item.id, description: item.description, titre: item.titre, prix: item.prix})}
+                            <TouchableOpacity
+                                style={{ borderWidth: 1, height: 250, width: 150, backgroundColor: "#40BBE1", borderRadius: 7, borderColor: 'white' }}
+                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
                             >
                                 <View style={{ alignItems: 'center' }}>
                                     <Image
@@ -105,13 +114,13 @@ export default class Accueil extends Component {
                                         {item.titre}
                                     </Text>
                                 </View>
-                              
-                                    <View style={{ alignItems: 'center', marginTop: 10 }}>
-                                        <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>
-                                            {item.prix}€
-                                        </Text>
-                                    </View>
-                           
+
+                                <View style={{ alignItems: 'center', marginTop: 10 }}>
+                                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>
+                                        {item.prix}€
+                                    </Text>
+                                </View>
+
                             </TouchableOpacity>
                         </View>
                     )} />
@@ -119,15 +128,17 @@ export default class Accueil extends Component {
 
 
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <TouchableOpacity style={{ borderwidth: 1, width: 150, height: 30, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                    {/* <TouchableOpacity style={{ borderwidth: 1, width: 150, height: 30, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}
                     // onPress={() => navigate("LOGIN")}
                     >
-                        <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>CATEGORIES</Text>
-                    </TouchableOpacity>
-                   
-                    <TouchableOpacity style={{ borderwidth: 1, width: 150, height: 30, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}>
-                        <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>MES LIKES</Text>
+                        <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', borderWidth: 1, borderColor: 'white', borderRadius: 7 }}>CATEGORIES</Text>
+                    </TouchableOpacity> */}
+
+                    <DropDown/>
+
+                    <TouchableOpacity style={{ borderColor: "white", borderWidth: 1, width: 150, height: 49, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}>
+                        <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', borderRadius: 7 }}>MES LIKES</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -139,8 +150,8 @@ export default class Accueil extends Component {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 15 }}>
-                            <TouchableOpacity style={{ borderWidth: 1, height: 180, width: 380, backgroundColor: "#40BBE1", borderRadius: 7 }}
-                                onPress={() => navigate('PRINT ANNONCE', {id: item.id, description: item.description, titre: item.titre, prix: item.prix})}
+                            <TouchableOpacity style={{ borderWidth: 1, height: 180, width: '95%', backgroundColor: "#40BBE1", borderRadius: 7, borderColor: 'white' }}
+                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
                             >
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ alignItems: 'center', flex: 0.5 }} >
@@ -155,7 +166,7 @@ export default class Accueil extends Component {
                                         </Text>
                                     </View>
                                     <View style={{ alignItems: 'center', flex: 0.5, justifyContent: 'center' }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold', width: 50 }}>
+                                        <Text style={{ fontSize: 18, fontWeight: 'bold', width: 70 }}>
                                             {item.prix}€
                                         </Text>
                                     </View>
@@ -213,5 +224,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         marginTop: 15
     },
+
+
+
 
 })

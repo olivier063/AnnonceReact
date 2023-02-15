@@ -2,7 +2,6 @@ import { Image, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react
 import React, { Component } from 'react'
 import AnnonceService from '../services/fetchAnnonces'
 import URI from '../services/uriService';
-import axios from 'axios';
 import userService from '../services/userService';
 
 
@@ -13,42 +12,36 @@ export default class MyAnnonce extends Component {
         super(props);
         // console.log("PROPS",this.props)
         this.state = {
-            data: []
+            data: [],
+            id: '',
+            titre: '',
+            description: '',
+            prix: ''
         };
 
         // Met à jour les annonces quand le composant monte 
         this.props.navigation.addListener('focus', async () => {
             const json = await AnnonceService.fetchMyAnnonces();
             this.setState({ data: json })
+           
         });
     }
 
 
     async componentDidMount() {
-        const json = await AnnonceService.fetchMyAnnonces();
+        const json = await AnnonceService.fetchOnlyMyAnnonces();
         this.setState({ data: json })
-        // console.log(json);
+        this.setState({ 
+            id: id,
+            titre: titre,
+            description: description,
+            prix: prix
+         })
+    
     }
 
+   
     //DELETE ANNONCE..............................................
-    // async deleteAnnonce() {
-    //    const options = {
-    //         method: 'DELETE',
-    //         headers: { 'Content-Type': 'application/json' },
-    //     };
-    //     try {
-    //         const response = await fetch(
-    //             `${URI}/api/annonces/${id}`, options)
-    //             .then(response => {
-    //                 response.json()
-    //             })
-    //         console.log("RESPONSE", JSON.stringify(response))
-    //     }
-    //     catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
     async deleteAnnonce(id) {
         try {
             // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
@@ -67,25 +60,13 @@ export default class MyAnnonce extends Component {
                 throw new Error(response.statusText);
             }
             const data = await response.json();
-            console.log("DATA", data)
-            const json = await AnnonceService.fetchMyAnnonces();
+            // console.log("DATA", data)
+            const json = await AnnonceService.fetchOnlyMyAnnonces();
             this.setState({ data: json })
         } catch (error) {
             console.log(error);
         }
     }
-
-    // async deleteAnnonce(e, id){
-    //     const data = e.currentTarget;
-    //     data.innerText = "Deleting"
-
-    //     const res = await axios.delete(`${URI}/api/annonces/${id}`)
-    //     if(res.data.status === 200){
-    //         data.closet("tr").remove()
-    //         console.log(res.data.message)
-    //     }
-    // }
-
     //..............................................DELETE ANNONCE
 
 
@@ -94,49 +75,56 @@ export default class MyAnnonce extends Component {
         const { navigate } = this.props.navigation;
         const { data } = this.state;
         return (
-            <View style={{ backgroundColor: '#40BBE1', height: '100%' }}>
+            <View style={{ backgroundColor: 'black', height: '100%' }}>
                 <FlatList
                     ListFooterComponent={<View style={{}} />} // ce style permet de scroller verticalement jusqu'au dernier item
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        <View style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, backgroundColor: '#40BBE1', marginTop: 10, margin: 10 }} >
+                        <View style={{ borderColor: 'white', borderWidth: 2, borderRadius: 7, backgroundColor: '#40BBE1', marginTop: 10, margin: 10 }} >
+                            <TouchableOpacity
+                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
 
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                <View style={{ marginTop: 15 }}>
-                                    <Image
-                                        source={require("../assets/connection.png")}
-                                        resizeMode="contain"
-                                        style={{
-                                            height: 70,
-                                            width: 100,
-                                            borderRadius: 50,
-                                            marginLeft: 0,
+                            >
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                    <View style={{ marginTop: 15 }}>
+                                        <Image
+                                            source={require("../assets/connection.png")}
+                                            resizeMode="contain"
+                                            style={{
+                                                height: 70,
+                                                width: 100,
+                                                borderRadius: 50,
+                                                marginLeft: 0,
 
-                                        }}
-                                    />
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ justifyContent: 'center' }}>
+                                        <Text style={{ width: 140, backgroundColor: 'white', borderRadius: 7, fontWeight: 'bold', textAlign: 'center' }}>{item.titre}</Text>
+                                    </View>
                                 </View>
-                                <View style={{ justifyContent: 'center' }}>
-                                    <Text style={{ width: 140, backgroundColor: 'white', borderRadius: 7, fontWeight: 'bold', textAlign: 'center' }}>{item.titre}</Text>
-                                </View>
-                            </View>
 
-                            <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-evenly', marginBottom: 20 }}>
-                                <View style={{ justifyContent: 'center' }}>
-                                    <TouchableOpacity
+                                <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-evenly', marginBottom: 20 }}>
+                                    <View style={{ justifyContent: 'center' }}>
+                                        <TouchableOpacity
+                                            style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
+                                            onPress={() => this.deleteAnnonce(item.id)}
+                                        >
+                                            <Text style={{ textAlign: 'center' }}>SUPPRIMER</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{ justifyContent: 'center', marginLeft: 20 }}>
+                                        <TouchableOpacity 
                                         style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
-                                        onPress={() => this.deleteAnnonce(item.id)}
-                                    >
-                                        <Text style={{ textAlign: 'center' }}>SUPPRIMER</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                                    <TouchableOpacity style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}>
-                                        <Text style={{ textAlign: 'center' }}>MODIFIER</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                                        onPress={() => navigate('UPDATE ANNONCE', {id: item.id, titre: item.titre, description: item.description, prix: item.prix})}
 
+                                        >
+                                            <Text style={{ textAlign: 'center' }}>MODIFIER</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     )} />
                 <View style={styles.createButton}>
@@ -162,6 +150,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#92AFD7',
         position: 'absolute',
         top: 570,
-        marginLeft: 310
+        marginLeft: 290
     }
 })
