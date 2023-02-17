@@ -31,11 +31,14 @@ export default class UpdateAnnonce extends Component {
             };
             const response = await fetch(
                 `${URI}/api/annonces/${this.state.id}`, requestOptions)
-            console.log(response)
+            console.log(JSON.stringify(response))
+            console.log(`${URI}/api/annonces/${this.state.id}`)
+            // return;
             if (response.ok) {
                 this.props.navigation.navigate('MY ANNONCE')
             } else {
                 const json = await response.json()
+                console.log("JSON",json)
                 alert(json.message)
 
             }
@@ -63,7 +66,7 @@ export default class UpdateAnnonce extends Component {
                     <TextInput
                         style={styles.inputDescription}
                         placeholder="Ecrire une courte description"
-                        maxLength={120}
+                        maxLength={255}
                         multiline={true}
                         numberOfLines={3}
                         value={this.state.description}

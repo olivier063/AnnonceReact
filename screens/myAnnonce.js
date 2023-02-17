@@ -10,20 +10,23 @@ import userService from '../services/userService';
 export default class MyAnnonce extends Component {
     constructor(props) {
         super(props);
-        // console.log("PROPS",this.props)
+        console.log("PROPS MY ANNONCE",this.props)
         this.state = {
             data: [],
             id: '',
             titre: '',
             description: '',
-            prix: ''
+            prix: '',
+            
         };
 
         // Met à jour les annonces quand le composant monte 
         this.props.navigation.addListener('focus', async () => {
-            const json = await AnnonceService.fetchMyAnnonces();
+            const json = await AnnonceService.fetchOnlyMyAnnonces();
+            json.sort((a, b) => {
+                return new Date(b.created_at) - new Date(a.created_at);
+              });
             this.setState({ data: json })
-           
         });
     }
 
@@ -35,7 +38,7 @@ export default class MyAnnonce extends Component {
             id: id,
             titre: titre,
             description: description,
-            prix: prix
+            prix: prix,
          })
     
     }
@@ -83,13 +86,13 @@ export default class MyAnnonce extends Component {
                     renderItem={({ item }) => (
                         <View style={{ borderColor: 'white', borderWidth: 2, borderRadius: 7, backgroundColor: '#40BBE1', marginTop: 10, margin: 10 }} >
                             <TouchableOpacity
-                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
+                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'], image: item.image })}
 
                             >
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     <View style={{ marginTop: 15 }}>
                                         <Image
-                                            source={require("../assets/connection.png")}
+                                            // source={{uri: item.image}}
                                             resizeMode="contain"
                                             style={{
                                                 height: 70,

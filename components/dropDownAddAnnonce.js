@@ -2,7 +2,7 @@ import { Text, View } from 'react-native'
 import React, { Component } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default class DropDown extends Component {
+export default class DropDownAddAnnonce extends Component {
     constructor(props) {
         super(props);
 
@@ -49,7 +49,7 @@ export default class DropDown extends Component {
         return (
             <View>
                 <DropDownPicker
-                    style={{ backgroundColor: '#92AFD7', width: 150, borderColor: "white", borderWidth: 1 }}
+                    style={{ backgroundColor: '#92AFD7', width: '94%', borderColor: "white", borderWidth: 1 }}
                     open={open}
                     value={value}
                     items={items}

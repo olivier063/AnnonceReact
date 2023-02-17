@@ -6,13 +6,14 @@ import axios from 'axios';
 import URI from '../services/uriService';
 import userService from '../services/userService';
 import * as ImagePicker from 'expo-image-picker';
+import DropDownAddAnnonce from './dropDownAddAnnonce';
 
 export default function AddAnnonce() {
     const navigation = useNavigation();
     const [titre, setTitre] = useState('');
     const [description, setDescription] = useState('');
     const [prix, setPrix] = useState('');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState(null);
 
 
 
@@ -37,11 +38,11 @@ export default function AddAnnonce() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ titre: titre, description: description, prix: prix })
+                body: JSON.stringify({ titre: titre, description: description, prix: prix, image: image })
             };
             const response = await fetch(
                 `${URI}/api/annonces`, requestOptions)
-            console.log(response)
+            console.log(JSON.stringify(response))
 
             if (response.ok) {
                 navigation.navigate('MY ANNONCE')
@@ -54,23 +55,72 @@ export default function AddAnnonce() {
             console.log(error);
         }
     }
+
+    // const postAnnonce = async () => {
+    //     if (!titre) {
+    //         alert("Entrez un titre")
+    //     }
+    //     else if (!description) {
+    //         alert("Entrez une desrciption")
+    //     }
+    //     else if (!prix) {
+    //         alert("Entrez un prix de vente")
+    //     }
+    //     else if (!image) {
+    //         alert("Entrez un prix de vente")
+    //     }
+    //     try {
+    //         const user = await userService.isConnected()
+    //         const formData = new FormData();
+    //         formData.append('titre', titre);
+    //         formData.append('description', description);
+    //         formData.append('prix', prix);
+    //         formData.append('image', {
+    //             uri: image.uri,
+    //             type: 'image/jpeg', // ou 'image/png' si l'image est au format PNG
+    //             name: 'image'
+    //         });
+    
+    //         const requestOptions = {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${user.token}`
+    //             },
+    //             body: formData
+    //         };
+    //         const response = await fetch(
+    //             `${URI}/api/annonces`, requestOptions)
+    //         console.log(JSON.stringify(response))
+    
+    //         if (response.ok) {
+    //             navigation.navigate('MY ANNONCE')
+    //         } else {
+    //             const json = await response.json()
+    //             // alert(json.message)
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.log(error);
+    //     }
+    // }
+    
     //..............................................POST ANNONCE
 
     //image-picker..............................................
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-
-        console.log(result);
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
+        // console.log("RESULT", result);
+        const uri = result.uri;
+        setImage(uri);
+        // console.log("URI", uri);
+        return uri;
     };
     //..............................................image-picker
 
@@ -81,7 +131,10 @@ export default function AddAnnonce() {
 
     return (
         <View style={{ backgroundColor: '#40BBE1', height: '100%' }} >
-            <View style={{ marginTop: 40 }}>
+            <View style={{ marginTop: 10 }}>
+                <View style={{  marginTop: 30, width: '90%', marginLeft: 27  }}>
+                    <DropDownAddAnnonce />
+                </View>
                 <TextInput
                     style={styles.input}
                     placeholder="Choisir un titre d'annonce"
@@ -117,6 +170,7 @@ export default function AddAnnonce() {
                     style={styles.image}
                     placeholder="Ajouter une photo"
                     value={image}
+                    source={{ uri: image }}
                     onChange={(e) => setImage(e.nativeEvent.text)}
                 />
             </View>
@@ -127,6 +181,7 @@ export default function AddAnnonce() {
                     <Text style={styles.button}>Choisir une image</Text>
                 </TouchableOpacity>
             </View>
+
             <View>
                 <View style={{ alignItems: 'center' }}>
                     <TouchableOpacity
@@ -146,6 +201,7 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         margin: 12,
+        marginTop: 25,
         borderWidth: 1,
         padding: 10,
         borderRadius: 10,
@@ -154,6 +210,7 @@ const styles = StyleSheet.create({
     inputDescription: {
         height: 80,
         margin: 12,
+        marginBottom: -2,
         borderWidth: 1,
         padding: 10,
         borderRadius: 10,
@@ -163,27 +220,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#92AFD7',
         width: 170,
         textAlign: 'center',
+        borderWidth: 1,
+        borderColor: 'white',
         borderRadius: 10,
         fontWeight: 'bold',
         marginTop: 10
     },
     validateButton: {
         backgroundColor: '#92AFD7',
-        width: 180,
+        width: 280,
         height: 50,
         textAlign: 'center',
+        borderWidth: 1,
+        borderColor: 'white',
         borderRadius: 10,
         fontWeight: 'bold',
         fontSize: 20,
-        marginTop: 100,
+        marginTop: 30,
         padding: 10 // j'ai mis un padding pour aligner verticalement le text du bouton car impossible de faire autrement
     },
     image: {
         marginTop: 20,
         height: 150,
-        width: 200,
+        width: 300,
         borderColor: 'black',
-        borderWidth: 3,
+        borderWidth: 1,
         borderRadius: 7,
         backgroundColor: 'white'
     }

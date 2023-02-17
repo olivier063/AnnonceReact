@@ -5,21 +5,17 @@ import userService from '../services/userService';
 import DropDown from '../components/dropDown';
 
 
-
-
-
-
 export default class Accueil extends Component {
 
     constructor(props) {
         super(props);
-        // console.log(this.props)
+        console.log("STATE",this.props)
         this.state = {
             data: [],
             data2: [],
             name: '',
 
-
+            image: null
         };
 
 
@@ -30,7 +26,6 @@ export default class Accueil extends Component {
             this.setState({ data2: json })
             // console.log(this.state.data2)
         });
-
     }
 
     // On recupère les annonces à la montée du component
@@ -38,20 +33,14 @@ export default class Accueil extends Component {
         const json = await AnnonceService.fetchAnnonces();
         this.setState({ data: json })
         // console.log("COMPONENT DID MOUNT",this.state);
+        // Le get storage permet de recup le nom de l'utilisateur depuis userService
         this.getStorage();
-
-
 
         // je cree un data2 pour la flatlist numero 2 afin de display les annonces par created at pour les annonces < 50 likes
         const json2 = await AnnonceService.fetchMyAnnonces();
         this.setState({ data2: json2 })
         // console.log(this.state.data)
     }
-
-
-
-
-
 
     // On verifie dans le localStorage que l'utilisateur soit bien connecté pour Set le state: name, afin de l'afficher dans l'accueil si il est connecté
     async getStorage() {
@@ -68,14 +57,9 @@ export default class Accueil extends Component {
         }
     }
 
-
-
-
-
     render() {
         const { data, data2 } = this.state;
         const { navigate } = this.props.navigation;
-
 
         return (
             <View style={{ backgroundColor: 'black' }}>
@@ -86,7 +70,6 @@ export default class Accueil extends Component {
                 <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 5, color: 'white' }}>LES PLUS LIKÉES</Text>
                 </View>
-
 
 
                 <FlatList
@@ -101,7 +84,7 @@ export default class Accueil extends Component {
                         <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 5, marginLeft: 10, marginBottom: 130 }}>
                             <TouchableOpacity
                                 style={{ borderWidth: 1, height: 250, width: 150, backgroundColor: "#40BBE1", borderRadius: 7, borderColor: 'white' }}
-                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
+                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'], image: item.image })}
                             >
                                 <View style={{ alignItems: 'center' }}>
                                     <Image
@@ -126,8 +109,6 @@ export default class Accueil extends Component {
                     )} />
 
 
-
-
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
                     {/* <TouchableOpacity style={{ borderwidth: 1, width: 150, height: 30, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}
                     // onPress={() => navigate("LOGIN")}
@@ -135,13 +116,12 @@ export default class Accueil extends Component {
                         <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', borderWidth: 1, borderColor: 'white', borderRadius: 7 }}>CATEGORIES</Text>
                     </TouchableOpacity> */}
 
-                    <DropDown/>
+                    <DropDown />
 
                     <TouchableOpacity style={{ borderColor: "white", borderWidth: 1, width: 150, height: 49, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', borderRadius: 7 }}>MES LIKES</Text>
                     </TouchableOpacity>
                 </View>
-
 
 
                 <FlatList
@@ -174,7 +154,7 @@ export default class Accueil extends Component {
                                 </View>
                                 <View style={{ alignItems: 'flex-end', marginRight: 10 }}>
 
-                                    {/* le item.nombre de like, s'ecrit entre crochets car dans le json il n'y a pas d'underscore */}
+                                    {/* le item.nombre de like, s'ecrit entre crochets car dans le json il n'y a pas d'underscore NE PLUS FAIRE ÇA!! */}
                                     <Text style={{ fontSize: 16, marginVertical: -15 }}>{item['nombre de like']} likes</Text>
                                 </View>
 
