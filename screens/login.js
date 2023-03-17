@@ -12,6 +12,7 @@ import LogoutButton from "../components/logoutButton";
 import MyAnnonce from "./myAnnonce";
 import userService from "../services/userService";
 import MyAnnonceButton from "../components/myAnnonceButton";
+import MyMessageButton from "../components/myMessageButton";
 
 
 export default class Login extends Component {
@@ -60,6 +61,8 @@ export default class Login extends Component {
 
                         {/* ici on fait passer au component MyAnnonceButton et LogoutButton la navigation  */}
                         <MyAnnonceButton navigation={this.props.navigation}/>
+
+                        <MyMessageButton navigation={this.props.navigation}/>
                     
                         <LogoutButton navigation={this.props.navigation}/>
                     </View>

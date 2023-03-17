@@ -9,7 +9,7 @@ export default class Accueil extends Component {
 
     constructor(props) {
         super(props);
-        console.log("STATE",this.props)
+        // console.log("STATE",this.props)
         this.state = {
             data: [],
             data2: [],
@@ -84,7 +84,15 @@ export default class Accueil extends Component {
                         <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 5, marginLeft: 10, marginBottom: 130 }}>
                             <TouchableOpacity
                                 style={{ borderWidth: 1, height: 250, width: 150, backgroundColor: "#40BBE1", borderRadius: 7, borderColor: 'white' }}
-                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'], image: item.image })}
+                                onPress={() => navigate('PRINT ANNONCE',
+                                    {
+                                        id: item.id,
+                                        description: item.description,
+                                        titre: item.titre,
+                                        prix: item.prix,
+                                        nombre_de_like: item['nombre de like'],
+                                        image: item.image
+                                    })}
                             >
                                 <View style={{ alignItems: 'center' }}>
                                     <Image
@@ -118,7 +126,17 @@ export default class Accueil extends Component {
 
                     <DropDown />
 
-                    <TouchableOpacity style={{ borderColor: "white", borderWidth: 1, width: 150, height: 49, backgroundColor: '#92AFD7', borderRadius: 7, justifyContent: 'center' }}>
+                    <TouchableOpacity style={{
+                        borderColor: "white",
+                        borderWidth: 1,
+                        width: 150,
+                        height: 49,
+                        backgroundColor: '#92AFD7',
+                        borderRadius: 7,
+                        justifyContent: 'center'
+                    }}
+                    onPress={() => navigate('MY LIKE')}
+                    >
                         <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', borderRadius: 7 }}>MES LIKES</Text>
                     </TouchableOpacity>
                 </View>
@@ -131,7 +149,14 @@ export default class Accueil extends Component {
                     renderItem={({ item }) => (
                         <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 15 }}>
                             <TouchableOpacity style={{ borderWidth: 1, height: 180, width: '95%', backgroundColor: "#40BBE1", borderRadius: 7, borderColor: 'white' }}
-                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'] })}
+                                onPress={() => navigate('PRINT ANNONCE',
+                                    {
+                                        id: item.id,
+                                        description: item.description,
+                                        titre: item.titre,
+                                        prix: item.prix,
+                                        nombre_de_like: item['nombre de like']
+                                    })}
                             >
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ alignItems: 'center', flex: 0.5 }} >

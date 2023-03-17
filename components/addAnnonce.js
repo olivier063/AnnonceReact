@@ -40,6 +40,7 @@ export default function AddAnnonce() {
                 },
                 body: JSON.stringify({ titre: titre, description: description, prix: prix, image: image })
             };
+            console.log('TOKEN',user.token)
             const response = await fetch(
                 `${URI}/api/annonces`, requestOptions)
             console.log(JSON.stringify(response))
@@ -55,55 +56,6 @@ export default function AddAnnonce() {
             console.log(error);
         }
     }
-
-    // const postAnnonce = async () => {
-    //     if (!titre) {
-    //         alert("Entrez un titre")
-    //     }
-    //     else if (!description) {
-    //         alert("Entrez une desrciption")
-    //     }
-    //     else if (!prix) {
-    //         alert("Entrez un prix de vente")
-    //     }
-    //     else if (!image) {
-    //         alert("Entrez un prix de vente")
-    //     }
-    //     try {
-    //         const user = await userService.isConnected()
-    //         const formData = new FormData();
-    //         formData.append('titre', titre);
-    //         formData.append('description', description);
-    //         formData.append('prix', prix);
-    //         formData.append('image', {
-    //             uri: image.uri,
-    //             type: 'image/jpeg', // ou 'image/png' si l'image est au format PNG
-    //             name: 'image'
-    //         });
-    
-    //         const requestOptions = {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${user.token}`
-    //             },
-    //             body: formData
-    //         };
-    //         const response = await fetch(
-    //             `${URI}/api/annonces`, requestOptions)
-    //         console.log(JSON.stringify(response))
-    
-    //         if (response.ok) {
-    //             navigation.navigate('MY ANNONCE')
-    //         } else {
-    //             const json = await response.json()
-    //             // alert(json.message)
-    //         }
-    //     }
-    //     catch (error) {
-    //         console.log(error);
-    //     }
-    // }
     
     //..............................................POST ANNONCE
 

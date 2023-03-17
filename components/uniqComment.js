@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { Component } from 'react'
-import { NavigationHelpersContext } from '@react-navigation/native'
 
 export default class UniqComment extends Component {
     render() {

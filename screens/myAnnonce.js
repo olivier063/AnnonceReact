@@ -10,14 +10,14 @@ import userService from '../services/userService';
 export default class MyAnnonce extends Component {
     constructor(props) {
         super(props);
-        console.log("PROPS MY ANNONCE",this.props)
+        console.log("PROPS MY ANNONCE", this.props)
         this.state = {
             data: [],
             id: '',
             titre: '',
             description: '',
             prix: '',
-            
+
         };
 
         // Met à jour les annonces quand le composant monte 
@@ -25,7 +25,7 @@ export default class MyAnnonce extends Component {
             const json = await AnnonceService.fetchOnlyMyAnnonces();
             json.sort((a, b) => {
                 return new Date(b.created_at) - new Date(a.created_at);
-              });
+            });
             this.setState({ data: json })
         });
     }
@@ -34,16 +34,18 @@ export default class MyAnnonce extends Component {
     async componentDidMount() {
         const json = await AnnonceService.fetchOnlyMyAnnonces();
         this.setState({ data: json })
-        this.setState({ 
-            id: id,
-            titre: titre,
-            description: description,
-            prix: prix,
-         })
-    
+        console.log('DATA', this.state.data)
+        
+        // this.setState({
+        //     id: id,
+        //     titre: titre,
+        //     description: description,
+        //     prix: prix,
+        // })
+
     }
 
-   
+
     //DELETE ANNONCE..............................................
     async deleteAnnonce(id) {
         try {
@@ -79,57 +81,75 @@ export default class MyAnnonce extends Component {
         const { data } = this.state;
         return (
             <View style={{ backgroundColor: 'black', height: '100%' }}>
-                <FlatList
-                    ListFooterComponent={<View style={{}} />} // ce style permet de scroller verticalement jusqu'au dernier item
-                    data={data}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                        <View style={{ borderColor: 'white', borderWidth: 2, borderRadius: 7, backgroundColor: '#40BBE1', marginTop: 10, margin: 10 }} >
-                            <TouchableOpacity
-                                onPress={() => navigate('PRINT ANNONCE', { id: item.id, description: item.description, titre: item.titre, prix: item.prix, nombre_de_like: item['nombre de like'], image: item.image })}
+                {this.state.data.length === 0 ? <Text style={{
+                    color: 'white',
+                    fontSize: 20,
+                    textAlign: 'center',
+                    marginTop: 300,
+                    justifyContent: 'center'
+                }}
+                >Vous n'avez pas publié d'annonce</Text> :
+                    <FlatList
+                        ListFooterComponent={<View style={{}} />} // ce style permet de scroller verticalement jusqu'au dernier item
+                        data={data}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <View style={{ borderColor: 'white', borderWidth: 2, borderRadius: 7, backgroundColor: '#40BBE1', marginTop: 10, margin: 10 }} >
+                                <TouchableOpacity
+                                    onPress={() => navigate('PRINT ANNONCE',
+                                        {
+                                            id: item.id,
+                                            description: item.description,
+                                            titre: item.titre,
+                                            prix: item.prix,
+                                            nombre_de_like: item['nombre de like'],
+                                            image: item.image
+                                        })}
 
-                            >
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                    <View style={{ marginTop: 15 }}>
-                                        <Image
-                                            // source={{uri: item.image}}
-                                            resizeMode="contain"
-                                            style={{
-                                                height: 70,
-                                                width: 100,
-                                                borderRadius: 50,
-                                                marginLeft: 0,
+                                >
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                        <View style={{ marginTop: 15 }}>
+                                            <Image
+                                                source={{ uri: item.image }}
+                                                resizeMode="contain"
+                                                style={{
+                                                    height: 70,
+                                                    width: 100,
+                                                    borderRadius: 50,
+                                                    marginLeft: 0,
+                                                    backgroundColor: 'white'
 
-                                            }}
-                                        />
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={{ justifyContent: 'center' }}>
+                                            <Text style={{ width: 140, backgroundColor: 'white', borderRadius: 7, fontWeight: 'bold', textAlign: 'center' }}>{item.titre}</Text>
+                                        </View>
                                     </View>
-                                    <View style={{ justifyContent: 'center' }}>
-                                        <Text style={{ width: 140, backgroundColor: 'white', borderRadius: 7, fontWeight: 'bold', textAlign: 'center' }}>{item.titre}</Text>
-                                    </View>
-                                </View>
 
-                                <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-evenly', marginBottom: 20 }}>
-                                    <View style={{ justifyContent: 'center' }}>
-                                        <TouchableOpacity
-                                            style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
-                                            onPress={() => this.deleteAnnonce(item.id)}
-                                        >
-                                            <Text style={{ textAlign: 'center' }}>SUPPRIMER</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                                        <TouchableOpacity 
-                                        style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
-                                        onPress={() => navigate('UPDATE ANNONCE', {id: item.id, titre: item.titre, description: item.description, prix: item.prix})}
+                                    <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-evenly', marginBottom: 20 }}>
+                                        <View style={{ justifyContent: 'center' }}>
+                                            <TouchableOpacity
+                                                style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
+                                                onPress={() => this.deleteAnnonce(item.id)}
+                                            >
+                                                <Text style={{ textAlign: 'center' }}>SUPPRIMER</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{ justifyContent: 'center', marginLeft: 20 }}>
+                                            <TouchableOpacity
+                                                style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
+                                                onPress={() => navigate('UPDATE ANNONCE', { id: item.id, titre: item.titre, description: item.description, prix: item.prix })}
 
-                                        >
-                                            <Text style={{ textAlign: 'center' }}>MODIFIER</Text>
-                                        </TouchableOpacity>
+                                            >
+                                                <Text style={{ textAlign: 'center' }}>MODIFIER</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    )} />
+                                </TouchableOpacity>
+                            </View>
+                        )} />
+                }
                 <View style={styles.createButton}>
                     <TouchableOpacity
                         onPress={() => navigate('ADD ANNONCE')}

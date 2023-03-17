@@ -9,7 +9,7 @@ import URI from '../services/uriService';
 export default class PrintAnnonce extends Component {
     constructor(props) {
         super(props);
-        // console.log("PROPS PRINT ANNONCE",this.props)
+        console.log("PROPS PRINT ANNONCE",this.props)
         this.state = {
             id: this.props.route.params.id,
             titre: this.props.route.params.titre,
@@ -49,17 +49,17 @@ export default class PrintAnnonce extends Component {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ 'nombre de like': this.state.nombre_de_like })
 
             };
             // console.log(user.token)
             const response = await fetch(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.id}`, requestOptions)
-            // console.log(this.state.nombre_de_like);
             if (response.ok) {
+                const json = await response.json()
+                this.setState({nombre_de_like: json.total_like})
                 // this.props.navigation.navigate('MY ANNONCE')
             } else {
                 const json = await response.json()
-                alert(json.message)
+                alert(json.total_like)
 
             }
         }
@@ -126,7 +126,10 @@ export default class PrintAnnonce extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={{ flex: 1, alignItems: 'center' }}
-                            onPress={() => navigate("COMMENTS")}
+                            onPress={() => navigate("COMMENTS",
+                            {
+                                id: this.state.id
+                            })}
                         >
                             <View >
                                 <Text style={{ borderWidth: 1, width: 150, backgroundColor: '#92AFD7', borderRadius: 7, textAlign: 'center' }}>Commentaires</Text>
