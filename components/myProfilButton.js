@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native'
 import React, { Component } from 'react'
 
 
-export default class MyAnnonceButton extends Component {
+export default class MyProfilButton extends Component {
     constructor(props) {
         super(props);
     // console.log("PROPS",this.props)
@@ -17,8 +17,6 @@ export default class MyAnnonceButton extends Component {
         return (
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity
-                // onPress={ () => this.props.navigation.navigate('MY ANNONCE')}
-                    // onPress={() => navigate('MY ANNONCE')}
                     style={{
                         alignItems: "center",
                         justifyContent: "center",
@@ -30,10 +28,10 @@ export default class MyAnnonceButton extends Component {
                         borderWidth: 1,
                         marginTop: 20
                     }}
-                    onPress={() => navigate("MY ANNONCE")}
+                    onPress={() => navigate("MY PROFIL")}
                 >
                     <Text>
-                         MES ANNONCES
+                         MON PROFIL
                     </Text>
                 </TouchableOpacity>
             </View>

@@ -23,7 +23,9 @@ class UserService {
         if (response === null) {
             return null;
         }
+       
         return this.setUser(response.data)
+        
     }
 
     async logout() {

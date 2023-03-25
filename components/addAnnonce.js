@@ -193,11 +193,12 @@ const styles = StyleSheet.create({
     },
     image: {
         marginTop: 20,
-        height: 150,
+        height: 200,
         width: 300,
         borderColor: 'black',
         borderWidth: 1,
         borderRadius: 7,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        // resizeMode:"contain"
     }
 })

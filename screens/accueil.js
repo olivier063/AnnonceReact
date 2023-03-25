@@ -32,7 +32,7 @@ export default class Accueil extends Component {
     async componentDidMount() {
         const json = await AnnonceService.fetchAnnonces();
         this.setState({ data: json })
-        // console.log("COMPONENT DID MOUNT",this.state);
+        console.log("COMPONENT DID MOUNT",this.state.data);
         // Le get storage permet de recup le nom de l'utilisateur depuis userService
         this.getStorage();
 
@@ -90,7 +90,7 @@ export default class Accueil extends Component {
                                         description: item.description,
                                         titre: item.titre,
                                         prix: item.prix,
-                                        nombre_de_like: item['nombre de like'],
+                                        nombre_de_like: item.my_like_annonce_count,
                                         image: item.image
                                     })}
                             >
@@ -155,7 +155,7 @@ export default class Accueil extends Component {
                                         description: item.description,
                                         titre: item.titre,
                                         prix: item.prix,
-                                        nombre_de_like: item['nombre de like']
+                                        nombre_de_like: item.my_like_annonce_count
                                     })}
                             >
                                 <View style={{ flexDirection: 'row' }}>

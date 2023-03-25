@@ -13,6 +13,7 @@ import MyAnnonce from "./myAnnonce";
 import userService from "../services/userService";
 import MyAnnonceButton from "../components/myAnnonceButton";
 import MyMessageButton from "../components/myMessageButton";
+import MyProfilButton from "../components/myProfilButton";
 
 
 export default class Login extends Component {
@@ -60,6 +61,8 @@ export default class Login extends Component {
                     <View style={{backgroundColor: '#40BBE1', height: '100%', justifyContent: 'center'}}>
 
                         {/* ici on fait passer au component MyAnnonceButton et LogoutButton la navigation  */}
+                        <MyProfilButton navigation={this.props.navigation}/>
+
                         <MyAnnonceButton navigation={this.props.navigation}/>
 
                         <MyMessageButton navigation={this.props.navigation}/>

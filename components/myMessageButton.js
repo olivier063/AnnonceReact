@@ -31,7 +31,7 @@ export default class MyMessageButton extends Component {
                     onPress={() => navigate("MY MESSAGE")}
                 >
                     <Text>
-                        GERER MES MESSAGES
+                         MES MESSAGES
                     </Text>
                 </TouchableOpacity>
             </View>
