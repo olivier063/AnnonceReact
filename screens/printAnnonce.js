@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image, ScrollView } from 'react-native'
+import { Text, View, TouchableOpacity, Image, ScrollView, Alert } from 'react-native'
 import React, { Component } from 'react'
 import userService from '../services/userService';
 import URI from '../services/uriService';
@@ -9,7 +9,7 @@ import URI from '../services/uriService';
 export default class PrintAnnonce extends Component {
     constructor(props) {
         super(props);
-        console.log("PROPS PRINT ANNONCE",this.props)
+        // console.log("PROPS PRINT ANNONCE",this.props)
         this.state = {
             id: this.props.route.params.id,
             titre: this.props.route.params.titre,
@@ -37,35 +37,49 @@ export default class PrintAnnonce extends Component {
     }
 
     updateLike = async () => {
-        // this.addLike()
-        try {
-            // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
-            const user = await userService.isConnected()
-            console.log(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.id}`)
-
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-
-            };
-            // console.log(user.token)
-            const response = await fetch(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.id}`, requestOptions)
-            if (response.ok) {
-                const json = await response.json()
-                this.setState({nombre_de_like: json.total_like})
-                // this.props.navigation.navigate('MY ANNONCE')
-            } else {
-                const json = await response.json()
-                alert(json.total_like)
-
+        // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
+        const user = await userService.isConnected()
+        if (user) {
+            try {
+                // console.log(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.id}`)
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                };
+                // console.log(user.token)
+                const response = await fetch(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.id}`, requestOptions)
+                if (response.ok) {
+                    const json = await response.json()
+                    this.setState({ nombre_de_like: json.total_like })
+                    // this.props.navigation.navigate('MY ANNONCE')
+                } else {
+                    Alert.alert("Veuillez vous connecter")
+                    const json = await response.json()
+                    alert(json.total_like)
+                }
             }
+            catch (error) {
+                console.log(error);
+            }
+        } else {
+            Alert.alert("Veuillez vous connecter")
         }
-        catch (error) {
-            console.log(error);
+
+    }
+
+   async onNavigateComments(){
+        const user = await userService.isConnected();
+        if (user){
+            this.props.navigation.navigate('COMMENTS',{
+                id: this.state.id
+            });
+        } else {
+            Alert.alert("Veuillez vous connecter");
         }
+      
     }
 
 
@@ -83,7 +97,7 @@ export default class PrintAnnonce extends Component {
                         </View>
                     </View>
 
-                    <View style={{ alignItems: 'center', marginTop: 10 }}>
+                    <View style={{ alignItems: 'center', marginTop: 10, margin: 10, borderRadius: 7 }}>
                         <Image
                             source={{ uri: this.props.route.params.image }}
                             resizeMode="contain"
@@ -116,7 +130,7 @@ export default class PrintAnnonce extends Component {
 
 
 
-                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    <View style={{ flexDirection: 'row', marginBottom: 40 }}>
                         <TouchableOpacity
                             style={{ flex: 1, alignItems: 'center' }}
                             onPress={() => this.updateLike()}
@@ -126,24 +140,25 @@ export default class PrintAnnonce extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={{ flex: 1, alignItems: 'center' }}
-                            onPress={() => navigate("COMMENTS",
-                            {
-                                id: this.state.id
-                            })}
+                            // onPress={() => navigate("COMMENTS",
+                            //     {
+                            //         id: this.state.id
+                            //     })}
+                                onPress={() => this.onNavigateComments()}
                         >
                             <View >
                                 <Text style={{ borderWidth: 1, width: 150, backgroundColor: '#92AFD7', borderRadius: 7, textAlign: 'center' }}>Commentaires</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={{ alignItems: 'center', padding: 20 }}
                         onPress={() => navigate("UNIQUE COMMENT")}
                     >
                         <View >
                             <Text style={{ borderWidth: 1, width: 150, backgroundColor: '#92AFD7', borderRadius: 7, textAlign: 'center' }}>Contacter l'annonceur</Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         )

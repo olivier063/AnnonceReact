@@ -20,7 +20,7 @@ export default class Comments extends Component {
 
     async componentDidMount() {
         const json = await this.fetchAllMessaging();
-    
+
         // this.setState({ data: json })
         // console.log('DATA',this.state.data)
     }
@@ -50,37 +50,37 @@ export default class Comments extends Component {
 
     // Publi un message
     postMessage = async () => {
-        if (!this.state.message) {
-            alert("Entrez un message")
-        }
-        try {
-            // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
-            const user = await userService.isConnected()
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({ message: this.state.message })
-            };
-            // console.log('TOKEN', user.token)
-            const response = await fetch(
-                `${URI}/api/messaging/${user.id}/annonce/${this.props.route.params.id}`, requestOptions)
-            console.log(JSON.stringify(response))
-                // this.setState({message: response})
-            if (response.ok) {
-                // Alert.alert('Message publié')
-                await this.fetchAllMessaging();
-                this.setState({message: ''})
-            } else {
-                const json = await response.json()
-                // alert(json.message)
+            if (!this.state.message) {
+                alert("Entrez un message")
             }
-        }
-        catch (error) {
-            console.log(error);
-        }
+            try {
+                // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
+                const user = await userService.isConnected()
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({ message: this.state.message })
+                };
+                // console.log('TOKEN', user.token)
+                const response = await fetch(
+                    `${URI}/api/messaging/${user.id}/annonce/${this.props.route.params.id}`, requestOptions)
+                console.log(JSON.stringify(response))
+                // this.setState({message: response})
+                if (response.ok) {
+                    // Alert.alert('Message publié')
+                    await this.fetchAllMessaging();
+                    this.setState({ message: '' })
+                } else {
+                    const json = await response.json()
+                    // alert(json.message)
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
     }
 
     render() {
@@ -90,7 +90,7 @@ export default class Comments extends Component {
         return (
 
 
-            <View style={{backgroundColor: 'black', height: '100%'}}>
+            <View style={{ backgroundColor: 'black', height: '100%' }}>
                 <TextInput
                     style={styles.input}
                     onChange={this.handleMessageChange}
@@ -105,8 +105,8 @@ export default class Comments extends Component {
                         textAlign: 'center',
                         borderRadius: 10,
                         fontWeight: 'bold'
-                    }} 
-                    onPress={() => this.postMessage()}
+                    }}
+                        onPress={() => this.postMessage()}
                     >
                         Publier
                     </Text>

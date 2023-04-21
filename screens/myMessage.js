@@ -104,7 +104,7 @@ export default class MyMessage extends Component {
                                     <View style={{
                                         marginTop: 10,
                                         justifyContent: 'center',
-                                        width: 350,
+                                        width: 300,
                                         height: 100,
                                         backgroundColor: 'white',
                                         borderRadius: 20

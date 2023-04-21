@@ -14,6 +14,8 @@ export default function AddAnnonce() {
     const [description, setDescription] = useState('');
     const [prix, setPrix] = useState('');
     const [image, setImage] = useState(null);
+    const [imageBase64, setImageBase64] = useState(null);
+
 
 
 
@@ -30,6 +32,7 @@ export default function AddAnnonce() {
             alert("Entrez un prix de vente")
         }
         try {
+            console.log('BASE64',imageBase64)
             // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
             const user = await userService.isConnected()
             const requestOptions = {
@@ -38,25 +41,27 @@ export default function AddAnnonce() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ titre: titre, description: description, prix: prix, image: image })
+                body: JSON.stringify({ titre: titre, description: description, prix: prix, image: image, imageBase64: imageBase64 })
             };
-            console.log('TOKEN',user.token)
+            console.log('TOKEN', user.token)
             const response = await fetch(
                 `${URI}/api/annonces`, requestOptions)
             console.log(JSON.stringify(response))
 
+            const json = await response.json()
+            // alert(json.message)
             if (response.ok) {
                 navigation.navigate('MY ANNONCE')
             } else {
                 const json = await response.json()
-                // alert(json.message)
+                alert(json.message)
             }
         }
         catch (error) {
             console.log(error);
         }
     }
-    
+
     //..............................................POST ANNONCE
 
     //image-picker..............................................
@@ -71,12 +76,31 @@ export default function AddAnnonce() {
         // console.log("RESULT", result);
         const uri = result.uri;
         setImage(uri);
+        setImageBase64(await convert(uri));
         // console.log("URI", uri);
         return uri;
     };
     //..............................................image-picker
 
-
+    const convert = (uri) => {
+        return new Promise(resolve => {
+            fetch(uri)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    // lire le blob en tant que texte avec le format de sortie "base64"
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function () {
+                        var base64data = reader.result;
+                        // afficher la chaîne de données en base64
+                        resolve(base64data);
+                    };
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
+    }
 
 
 
@@ -84,9 +108,9 @@ export default function AddAnnonce() {
     return (
         <View style={{ backgroundColor: '#40BBE1', height: '100%' }} >
             <View style={{ marginTop: 10 }}>
-                <View style={{  marginTop: 30, width: '90%', marginLeft: 27  }}>
+                {/* <View style={{ marginTop: 30, width: '90%', marginLeft: 27 }}>
                     <DropDownAddAnnonce />
-                </View>
+                </View> */}
                 <TextInput
                     style={styles.input}
                     placeholder="Choisir un titre d'annonce"

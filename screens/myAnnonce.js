@@ -5,8 +5,6 @@ import URI from '../services/uriService';
 import userService from '../services/userService';
 
 
-
-
 export default class MyAnnonce extends Component {
     constructor(props) {
         super(props);
@@ -48,6 +46,7 @@ export default class MyAnnonce extends Component {
 
     //DELETE ANNONCE..............................................
     async deleteAnnonce(id) {
+        console.log("TOTI")
         try {
             // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
             const user = await userService.isConnected()

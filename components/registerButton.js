@@ -61,7 +61,6 @@ export default function RegisterButton() {
             navigation.navigate('ACCUEIL')     
             console.log(StorageService)
         }
-
     }
 
     return (

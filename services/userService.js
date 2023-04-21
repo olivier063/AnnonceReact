@@ -16,16 +16,14 @@ class UserService {
         };
         let response = null;
         try {
-            response = await axios.post(`${URI}/api/Login`, JSON.stringify({ email: email, password: password }), customConfig);
+            response = await axios.post(`${URI}/api/login`, JSON.stringify({ email: email, password: password }), customConfig);
         } catch (e) {
             console.log(e)
         }
         if (response === null) {
             return null;
         }
-       
         return this.setUser(response.data)
-        
     }
 
     async logout() {
@@ -56,7 +54,6 @@ class UserService {
     }
 
     async setUser(token) {
-
         const customConfig = {
             headers: {
                 'Content-Type': 'application/json',
