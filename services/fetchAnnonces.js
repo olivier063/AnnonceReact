@@ -45,7 +45,7 @@ class Annonce {
 
       if (response.ok) {
         const data = await response.json();
-        //   console.log("FETCH ONLY MY ANNONCES",data);
+          console.log("FETCH ONLY MY ANNONCES",data);
         return data;
       } else {
         console.log("Erreur lors de la récupération des annonces");

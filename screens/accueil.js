@@ -22,9 +22,11 @@ export default class Accueil extends Component {
         // le addListener de fetchMyAnnonces permet de mettre a jour la liste d'annonce dans la 2eme flatlist lors de la creation d'une annonce
         this.props.navigation.addListener('focus', async () => {
             this.getStorage();
-            const json = await AnnonceService.fetchMyAnnonces();
-            this.setState({ data2: json })
+            const json2 = await AnnonceService.fetchMyAnnonces();
+            this.setState({ data2: json2 })
             // console.log(this.state.data2)
+            const json = await AnnonceService.fetchAnnonces();
+            this.setState({ data: json })
         });
     }
 
@@ -39,7 +41,7 @@ export default class Accueil extends Component {
         // je cree un data2 pour la flatlist numero 2 afin de display les annonces par created at pour les annonces < 50 likes
         const json2 = await AnnonceService.fetchMyAnnonces();
         this.setState({ data2: json2 })
-        console.log(this.state.data2)
+        // console.log(this.state.data2)
     }
 
     // On verifie dans le localStorage que l'utilisateur soit bien connecté pour Set le state: name, afin de l'afficher dans l'accueil si il est connecté
@@ -102,14 +104,16 @@ export default class Accueil extends Component {
                                         titre: item.titre,
                                         prix: item.prix,
                                         nombre_de_like: item.my_like_annonce_count,
-                                        image: item.image
+                                        image: item.my_image ? item.my_image.content : '',
                                     })}
                             >
                                 <View style={{ alignItems: 'center' }}>
+                                    {(item.my_image) ?
                                     <Image
-                                        source={require("../assets/skate.jpeg")}
+                                        source={{uri: item.my_image.content}}
                                         resizeMode="contain"
                                         style={styles.image} />
+                                        : ''}
                                 </View>
                                 <View style={{ alignItems: 'center', marginTop: 5, height: 80 }}>
                                     <Text style={{ textAlign: 'center', fontSize: 15 }}>
@@ -167,15 +171,18 @@ export default class Accueil extends Component {
                                         description: item.description,
                                         titre: item.titre,
                                         prix: item.prix,
-                                        nombre_de_like: item.my_like_annonce_count
+                                        nombre_de_like: item.my_like_annonce_count,
+                                        image: item.my_image ? item.my_image.content : '', 
                                     })}
                             >
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ alignItems: 'center', flex: 0.5 }} >
+                                        {(item.my_image) ?
                                         <Image
-                                            source={require("../assets/legumes.jpeg")}
+                                            source={{uri: item.my_image.content}}
                                             // resizeMode="contain"
                                             style={styles.image2} />
+                                            : ''}
                                     </View>
                                     <View style={{ alignItems: 'center', flex: 0.5, height: 150, justifyContent: 'center' }}>
                                         <Text style={{ fontSize: 15, textAlign: 'center', marginLeft: 30 }}>

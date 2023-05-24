@@ -30,8 +30,6 @@ export default class MyLike extends Component {
     });
   }
 
-
-
   async componentDidMount() {
     const json = await AnnonceService.fetchOnlyMyLikes();
     this.setState({ data: json })
@@ -39,42 +37,40 @@ export default class MyLike extends Component {
 
     const firstElements = json.map(obj => obj.annonce_id);
     this.setState({ firstElements });
-    console.log('FIRST',this.state.firstElements)
-    // this.setAnnonce();
-
+    console.log('FIRST', this.state.firstElements)
   }
 
-  async setAnnonce() {
-    try {
-      const user = await userService.isConnected();
-      const response = await fetch(URI + `/api/annonces/${this.state.firstElements}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
+  // async setAnnonce() {
+  //   try {
+  //     const user = await userService.isConnected();
+  //     const response = await fetch(URI + `/api/annonces/${this.state.firstElements}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${user.token}`
+  //       }
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('DATA ANNONCE', data);
-        this.setState({
-          titre: data.titre,
-          image: data.image
-        })
-        return data;
-      } else {
-        console.log("Erreur lors de la récupération des annonces");
-        console.log('Authorization', `Bearer ${user.token}`);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log('DATA ANNONCE', data);
+  //       this.setState({
+  //         titre: data.titre,
+  //         image: data.image
+  //       })
+  //       return data;
+  //     } else {
+  //       console.log("Erreur lors de la récupération des annonces");
+  //       console.log('Authorization', `Bearer ${user.token}`);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
 
 
-  updateLike = async () => {
+  updateLike = async (annonce_id) => {
     try {
       // on attend que userService.isConnected finisse de travailler pour recuperer le token de l'user (user.token)
       const user = await userService.isConnected()
@@ -85,16 +81,18 @@ export default class MyLike extends Component {
           'Authorization': `Bearer ${user.token}`
         },
       };
-      // console.log(user.token)
-      const response = await fetch(`${URI}/api/like-annonce/${user.id}/annonce/${this.state.firstElements}`, requestOptions)
+      console.log('ID', annonce_id)
+      const response = await fetch(`${URI}/api/like-annonce/${user.id}/annonce/${annonce_id}`, requestOptions)
       if (response.ok) {
         const json = await response.json()
         this.setState({ nombre_de_like: json.total_like })
-        console.log('NB LIKE',this.state.nombre_de_like)
+        console.log('NB LIKE', this.state.nombre_de_like)
       } else {
         const json = await response.json()
         // alert(json.total_like)
       }
+      const json = await AnnonceService.fetchOnlyMyLikes();
+      this.setState({ data: json })
     }
     catch (error) {
       console.log(error);
@@ -124,7 +122,7 @@ export default class MyLike extends Component {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                   <View style={{ marginTop: 15 }}>
-                    <Image
+                    {/* <Image
                       source={{ uri: this.state.image }}
                       resizeMode="contain"
                       style={{
@@ -135,7 +133,7 @@ export default class MyLike extends Component {
                         backgroundColor: 'white'
 
                       }}
-                    />
+                    /> */}
                   </View>
                   <View style={{ justifyContent: 'center' }}>
                     <Text style={{ width: 140, backgroundColor: 'white', borderRadius: 7, fontWeight: 'bold', textAlign: 'center' }}>{item.titre}</Text>
@@ -146,7 +144,7 @@ export default class MyLike extends Component {
                   <View style={{ justifyContent: 'center' }}>
                     <TouchableOpacity
                       style={{ borderColor: 'black', borderWidth: 2, borderRadius: 7, width: 100, backgroundColor: 'white' }}
-                      onPress={() => this.updateLike()}
+                      onPress={() => this.updateLike(item.annonce_id)}
                     >
                       <Text style={{ textAlign: 'center' }}>Dislike</Text>
                     </TouchableOpacity>

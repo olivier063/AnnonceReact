@@ -58,8 +58,8 @@ export default class MyAnnonce extends Component {
                 },
             });
             //   console.log(response)
-            //   console.log(id)
-            //   console.log(token)
+              console.log(id)
+              console.log(user.token)
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
